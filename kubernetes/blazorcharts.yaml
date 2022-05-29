@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blazorcharts
+  labels:
+    app: blazorcharts
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: blazorcharts
+  template:
+    metadata:
+      name: blazorcharts
+      labels:
+        app: blazorcharts
+    spec:
+      containers:
+        - name: blazorcharts
+          image: blazorcharts
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ConnectionStrings__SensorsAPI
+              value: 'http://sensorsapi:8080'
+            - name: ConnectionStrings__Redis
+              value: 'redis:6379'
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blazorcharts
+spec:
+  selector:
+    app: blazorcharts
+  ports:
+    - port: 8080
+      name: http

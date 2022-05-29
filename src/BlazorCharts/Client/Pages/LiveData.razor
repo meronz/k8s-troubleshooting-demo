@@ -1,0 +1,55 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager _navigationManager
+@implements IAsyncDisposable
+
+<PageTitle>Live Data</PageTitle>
+
+<h1>Live Data</h1>
+
+<MyChart Labels="_labels" Series="_series"/>
+
+
+@code {
+    private const int MAX_VALUES_SHOWN = 20;
+    private HubConnection? _hubConnection;
+    private readonly List<string> _labels = new();
+    private readonly List<double> _series = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navigationManager.ToAbsoluteUri("/hubs/temp"))
+            .Build();
+
+        _ = Task.Run(async () =>
+        {
+            var channel = await _hubConnection.StreamAsChannelAsync<TemperatureData>("LiveData");
+            while (await channel.WaitToReadAsync())
+            {
+                var data = await channel.ReadAsync();
+                _labels.Add(data.Timestamp.ToLongTimeString());
+                _series.Add(data.Temperature);
+                if (_labels.Count > MAX_VALUES_SHOWN)
+                {
+                    _labels.RemoveAt(0);
+                    _series.RemoveAt(0);
+                }
+                Console.WriteLine($"Received {data}");
+                StateHasChanged();
+            }
+            Console.WriteLine("Stream closed");
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+}

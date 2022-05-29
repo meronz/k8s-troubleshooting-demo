@@ -1,0 +1,15 @@
+@inject Chartist _chartist;
+
+<div class="ct-chart"></div>
+
+@code {
+
+    [Parameter]
+    public List<string> Labels { get; set; } = new();
+
+    [Parameter]
+    public List<double> Series { get; set; } = new();
+    
+    protected override Task OnParametersSetAsync() => 
+        _chartist.CreateLine(".ct-chart", Labels, Series);
+}

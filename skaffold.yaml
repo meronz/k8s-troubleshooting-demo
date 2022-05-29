@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: blazorcharts
+build:
+  local:
+    useBuildkit: true
+    concurrency: 2
+
+  # image to build
+  artifacts:
+    - image: blazorcharts
+      docker:
+        dockerfile: BlazorCharts.dockerfile
+    - image: sensorsapi
+      docker:
+        dockerfile: SensorsAPI.dockerfile
+
+# resources to be created on k8s
+deploy:
+  kubectl:
+    manifests:
+      - kubernetes/redis.yaml
+      - kubernetes/blazorcharts.yaml
+      - kubernetes/sensorsapi.yaml
+      - kubernetes/ingress.yaml

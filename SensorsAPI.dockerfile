@@ -17,6 +17,7 @@ WORKDIR /app
 ENTRYPOINT ["dotnet", "SensorsAPI.Server.dll"]
 EXPOSE 8080
 ENV DOTNET_RUNNING_IN_CONTAINER=true
-ENV ASPNETCORE_URLS='http://+:8080'
+# this is wrong...
+ENV ASPNETCORE_URLS='http://127.0.0.1:8080'
 ENV ASPNETCORE_ENVIRONMENT='Production'
 ENV Logging__Console__FormatterName='Simple'

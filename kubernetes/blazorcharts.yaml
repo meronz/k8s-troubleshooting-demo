@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: ConnectionStrings__SensorsAPI
-              value: 'http://sensorsapi:8080'
+              value: 'http://sensors:8080'  # this is wrong
             - name: ConnectionStrings__Redis
               value: 'redis:6379'
       restartPolicy: Always

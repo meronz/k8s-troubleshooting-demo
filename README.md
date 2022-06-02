@@ -15,3 +15,7 @@ and once it finishes, run:
 minikube tunnel
 ```
 to expose the application on [http://localhost:8080](http://localhost:8080)
+
+---
+
+The application on this branch is broken, try to fix it using only kubectl!
